@@ -1,4 +1,4 @@
-# Die Werte werden alle durch Kommas von einander getrennt, die Werte sind dies:
+# The values ​​are all separated by commas.:
 
 
   ```
