@@ -3,13 +3,12 @@
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 
-// Standard-I2C-Pins deines Boards
+// Standard-I2C-Pins
 #define I2C_SDA 21
 #define I2C_SCL 22
 
-// Instanzen für BEIDE Sensoren anlegen
 Adafruit_MPL3115A2 mpl = Adafruit_MPL3115A2();
-Adafruit_MPU6050 mpu = Adafruit_MPU6050(); // GY-521 basiert auf dem MPU6050
+Adafruit_MPU6050 mpu = Adafruit_MPU6050();
 
 void setup() {
   Serial.begin(115200);
@@ -17,31 +16,28 @@ void setup() {
 
   Serial.println("\n--- Dual-Sensor Test (MPL3115A2 + GY-521) ---");
 
-  // I2C-Bus einmalig für BEIDE Sensoren starten
+  // start I2C-Bus once
   Wire.begin(I2C_SDA, I2C_SCL);
 
-  // 1. Höhenmesser initialisieren
   if (!mpl.begin()) {
-    Serial.println("Fehler: MPL3115A2 (Höhenmesser) nicht gefunden!");
+    Serial.println("Fehler: MPL3115A2 (Höhenmesser) not Found!");
     while (1) { delay(100); } 
   }
-  Serial.println("-> MPL3115A2 erfolgreich gestartet.");
+  Serial.println("-> MPL3115A2 sucsesfully started.");
 
-  // 2. Gyroskop / Beschleunigungssensor initialisieren
   if (!mpu.begin()) {
-    Serial.println("Fehler: GY-521 (MPU6050) nicht gefunden!");
+    Serial.println("Errror: GY-521 (MPU6050) not found!");
     while (1) { delay(100); } 
   }
   Serial.println("-> GY-521 (MPU6050) erfolgreich gestartet.");
 
-  // Optionale Einstellungen für das Gyroskop (für stabilen Flug)
+  // Optional settings (best for a flight?!)
   mpu.setAccelerometerRange(MPU6050_RANGE_8_G); // Beschleunigung bis 8G
   mpu.setGyroRange(MPU6050_RANGE_500_DEG);     // Rotation bis 500°/s
   mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);   // Filtert leichtes Rauschen heraus
 }
 
 void loop() {
-  // --- Daten vom Höhenmesser abfragen ---
   float temperatur = mpl.getTemperature(); 
   float druck = mpl.getPressure();
   float hoehe = mpl.getAltitude();       
@@ -70,7 +66,6 @@ void loop() {
 
   // Serial.println("------------------------------------\n");
 
-  // Alle Werte in einer einzigen Zeile, getrennt durch Kommas senden
   Serial.print(hoehe);            Serial.print(",");
   Serial.print(druck);            Serial.print(",");
   Serial.print(temperatur);       Serial.print(",");
@@ -79,7 +74,7 @@ void loop() {
   Serial.print(a.acceleration.z); Serial.print(",");
   Serial.print(g.gyro.x);         Serial.print(",");
   Serial.print(g.gyro.y);         Serial.print(",");
-  Serial.println(g.gyro.z);       // Wichtig: Das letzte ist ein println für den Zeilenumbruch!
+  Serial.println(g.gyro.z);
 
-  delay(500); // Messung alle halbe Sekunde
+  delay(500); // repeat ever half second
 }
